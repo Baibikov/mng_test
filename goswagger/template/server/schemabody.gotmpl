@@ -1,0 +1,59 @@
+{{ define "withoutBaseTypeBodyOrNonExported" }}struct {
+  {{ range .AllOf }}
+    {{ if .IsAnonymous }}
+      {{ range .Properties }}
+        {{ if and .IsExported (not .IsBaseType) }}
+          {{ if .IsTuple }}
+            {{ template "tuplefield" . }}
+          {{ else }}
+            {{template "structfield" . }}
+          {{ end }}
+        {{ end}}
+      {{ end }}
+      {{ if .HasAdditionalProperties }}
+        {{ if .AdditionalProperties }}
+          {{ if .IsExported }}{{ pascalize .AdditionalProperties.Name }}{{ else }}{{ .AdditionalProperties.Name }}{{ end }} map[string]{{ template "schemaType" .AdditionalProperties }} `json:"-"`
+        {{end}}
+      {{ end }}
+      {{ if .AdditionalItems }}
+        {{ if .IsExported }}{{ pascalize .AdditionalItems.Name }}{{ else }}{{ .AdditionalItems.Name }}{{ end }} []{{ template "schemaType" .AdditionalItems }} `json:"-"`
+      {{ end }}
+      {{ else }}
+        {{ if not (and .IsBaseType .IsExported) }}
+          {{ .GoType }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{range .Properties}}
+    {{ if not .IsBaseType }}
+      {{ if not .IsExported }}
+        {{template "privstructfield" . }}
+      {{ else }}
+        {{ pascalize .Name}} {{ template "schemaType" . }} `json:"{{ .OriginalName }}{{ if and (not .Required) .IsEmptyOmitted }},omitempty{{ end }}{{ if .IsJSONString }},string{{ end }}"`
+      {{ end}}
+    {{end}}
+  {{ end }}
+  {{ if .HasAdditionalProperties }}
+    {{ pascalize .AdditionalProperties.Name }}{{ if .IsExported }}Field{{ end }} map[string]{{ template "schemaType" .AdditionalProperties }} `json:"-"`
+  {{ end }}}{
+  {{ range .AllOf }}
+    {{ if .IsAnonymous }}
+      {{ range .Properties }}
+        {{ if not .IsBaseType }}
+          {{ pascalize .Name }}: {{ .ReceiverName}}.{{ pascalize .Name }},
+        {{ end }}
+      {{ end }}
+    {{ else }}
+      {{ if not (and .IsBaseType .IsExported) }}
+        {{ .GoType }}: {{ .ReceiverName }}.{{ .GoType }},
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ range .Properties }}
+    {{ if and (not .IsBaseType) .IsExported }}
+      {{ pascalize .Name }}: {{ .ReceiverName }}.{{ pascalize .Name }},
+    {{ end }}
+  {{ end }}
+  },
+{{- end }}
+
