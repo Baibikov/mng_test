@@ -3,7 +3,7 @@ info:
   title: task api
   description: Api for task service
   version: 1.0.0
-basePath: /api
+basePath: /api/v1
 consumes:
   - application/json
 produces:
@@ -12,6 +12,11 @@ schemes:
   - http
   - https
 definitions:
+  GetTasks:
+    type: array
+    items:
+      $ref: '#/definitions/GetTask'
+    x-omitempty: false
   GetTask:
     properties:
       id:
@@ -35,9 +40,26 @@ responses:
     schema:
       $ref: '#/definitions/GenericError'
 paths:
+  /tasks:
+    get:
+      summary: Get tasks
+      operationId: get_tasks
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GetTasks'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
   /tasks/{id}:
     get:
-      summary: Получить таблицу сценариев контрольных соотношений
+      summary: Get one task
       operationId: get_task
       parameters:
         - in: path

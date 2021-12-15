@@ -8,11 +8,17 @@ import (
 )
 
 type Config struct {
-	DB db `yaml:"db"`
+	DB  db  `yaml:"db"`
+	App app `yaml:"app"`
 }
 
 type db struct {
 	ConnLink string `yaml:"conn"`
+}
+
+type app struct {
+	Port       string `yaml:"port"`
+	BasePrefix string `yaml:"basePrefix"`
 }
 
 func New(configPath string) (*Config, error) {

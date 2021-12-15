@@ -1,2 +1,6 @@
 db:
-  conn: postgres://root:123@127.0.0.1:9777/telegram_bot?sslmode=disable
+  conn: mongodb://root:123@localhost:27017
+
+app:
+  port: 9090
+  basePrefix: /api/v1/
