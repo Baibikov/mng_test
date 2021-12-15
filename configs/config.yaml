@@ -1,0 +1,2 @@
+db:
+  conn: postgres://root:123@127.0.0.1:9777/telegram_bot?sslmode=disable

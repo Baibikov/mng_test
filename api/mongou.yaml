@@ -1,0 +1,59 @@
+swagger: "2.0"
+info:
+  title: task api
+  description: Api for task service
+  version: 1.0.0
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+definitions:
+  GetTask:
+    properties:
+      id:
+        type: string
+        x-omitempty: false
+      name:
+        type: string
+        x-omitempty: false
+  GenericError:
+    properties:
+      code:
+        format: int
+        type: integer
+        x-omitempty: false
+      message:
+        type: string
+        x-omitempty: false
+responses:
+  ErrorResponse:
+    description: ErrorReponse
+    schema:
+      $ref: '#/definitions/GenericError'
+paths:
+  /tasks/{id}:
+    get:
+      summary: Получить таблицу сценариев контрольных соотношений
+      operationId: get_task
+      parameters:
+        - in: path
+          name: id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GetTask'
+        '400':
+          $ref: '#/responses/ErrorResponse'
+        '401':
+          $ref: '#/responses/ErrorResponse'
+        '403':
+          $ref: '#/responses/ErrorResponse'
+        '500':
+          $ref: '#/responses/ErrorResponse'
